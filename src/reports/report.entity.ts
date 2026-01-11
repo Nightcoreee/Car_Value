@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, AbstractRepository } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
 @Entity()
 export class ReportEntity {
