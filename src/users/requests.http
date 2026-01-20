@@ -7,7 +7,7 @@ Content-Type: application/json
     "password": "dákdll"
 }
 
-###Sigin with user existed
+###Signin with user existed
 POST http://localhost:3000/auth/signin
 Content-Type: application/json
 
@@ -15,6 +15,9 @@ Content-Type: application/json
     "email": "ha6060@gmail.com",
     "password": "dákdll"
 }
+
+### Get the currently signed in user
+GET http://localhost:3000/auth/whoami
 
 ###Find a particular user with a given ID
 GET http://localhost:3000/auth/3
@@ -33,4 +36,3 @@ Content-Type: application/json
 {
     "email" : "ha6969@gmail.com"
 }
-
