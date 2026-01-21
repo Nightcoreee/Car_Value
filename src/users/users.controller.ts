@@ -1,10 +1,22 @@
 import { AuthService } from './auth.service';
-import { Controller, Post, Body, Get, Patch, Query, Param, Delete, NotFoundException, Session } from '@nestjs/common';
+import { 
+    Controller, 
+    Post, 
+    Body, 
+    Get, 
+    Patch, 
+    Query, 
+    Param, 
+    Delete, 
+    NotFoundException, 
+    Session,
+} from '@nestjs/common';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { Serialize } from '../interceptors/serialize.interceptor';
 import { UserDto } from './dtos/user.dto';
+import { CurrentUser } from './decorators/current-user.decorator';
 
 //Controller gọi API
 @Controller('auth')
@@ -16,9 +28,14 @@ export class UsersController {
     ) {}
 
     //Check user signed in
+    // @Get('/whoami')
+    // whoAmI(@Session() session: any) {
+    //     return this.usersService.findOne(session.userId);
+    // }
+
     @Get('/whoami')
-    whoAmI(@Session() session: any) {
-        return this.usersService.findOne(session.userId);
+    whoAmI(@CurrentUser() user: string) {
+        return user;
     }
 
     @Post('/signout')
