@@ -7,6 +7,7 @@ export const CurrentUser = createParamDecorator(
     (data: never, context: ExecutionContext) => {
         const request = context.switchToHttp().getRequest();
         // Lấy giá trị currentUser đã được gán trong interceptor
+        //Đọc giá trị user từ request
         return request.currentUser;
     }
 )
