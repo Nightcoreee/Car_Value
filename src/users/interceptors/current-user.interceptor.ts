@@ -1,4 +1,3 @@
-import { CurrentUser } from './../decorators/current-user.decorator';
 import { UsersService } from './../users.service';
 import { 
     NestInterceptor,
@@ -6,7 +5,6 @@ import {
     CallHandler,
     Injectable
  } from "@nestjs/common";
-import { Observable } from 'rxjs';
 
 @Injectable()
 export class CurrentUserInterceptor implements NestInterceptor {
@@ -14,10 +12,11 @@ export class CurrentUserInterceptor implements NestInterceptor {
 
     async intercept(context: ExecutionContext, handler: CallHandler) {
         const request = context.switchToHttp().getRequest();
-        const { userId } = request.session;
+        const { userId } = request.session || {};
 
         if (userId) {
             const user = await this.UsersService.findOne(userId);
+            // Gán giá trị user vào request để decorator có thể lấy
             request.currentUser = user;
         }
         return handler.handle();
