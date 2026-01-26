@@ -9,13 +9,20 @@ describe('AuthService', () => {
     let fakeUsersService: Partial<UsersService>;
 
     beforeEach(async () => {
-     //create a fake copy of users service
+        const users: UserEntity[] = [];
+    //create a fake copy of users service
     //mocks
-    fakeUsersService = {
-        find: () => Promise.resolve([]),
-        create: (email: string, password: string) => 
-            Promise.resolve({ id: 1, email, password } as UserEntity),
-    };
+        fakeUsersService = {
+            find: (email: string) => {
+                const filteredUsers = users.filter(user => user.email === email);
+                return Promise.resolve(filteredUsers);
+            },
+            create: (email: string, password: string) => {
+                const user = ({id: Math.floor(Math.random() * 999999), email, password} as UserEntity);
+                users.push(user);
+                return Promise.resolve(user);
+            }
+        };
 
 
     const module = await Test.createTestingModule({
@@ -31,11 +38,12 @@ describe('AuthService', () => {
 });
 
     //Test case
+    //TC1: Tạo instance của AuthService
     it('can create an instance of AuthService', async () => {
         expect(service).toBeDefined();
     });
 
-
+    //TC2: Tạo user phải hashed password
     it('creates a new user with a salted and hashed password', async () => {
         const user = await service.signup('asdf@asdf.com', 'asdf');
         expect(user.password).not.toEqual('asdf');
@@ -44,7 +52,7 @@ describe('AuthService', () => {
         expect(hash).toBeDefined();
     });
 
-
+    //TC3: Không thể tạo user với email đã tồn tại
     it('throws an error if user signs up with email that is in use', async () => {
         fakeUsersService.find = () =>
         Promise.resolve([{ id: 1, email: 'a', password: '1' } as UserEntity]);
@@ -53,13 +61,31 @@ describe('AuthService', () => {
         );
     });
 
-
+    //TC4: Không thể đăng nhập với email không tồn tại
     it('throws if signin is called with an unused email', async () => {
         await expect(
         service.signin('asdflkj@asdlfkj.com', 'passdflkj'),
             ).rejects.toThrow(NotFoundException);
     });    
 
+    //TC5: Không thể đăng nhập với mật khẩu sai
+    it('throws if an invalid password is provided', async () => {
+        fakeUsersService.find = () =>
+        Promise.resolve([
+            { email: 'asdf@asdf.com', password: 'laskdjf' } as UserEntity,
+        ]);
+        await expect(
+        service.signin('laskdjf@alskdfj.com', 'passowrd'),
+        ).rejects.toThrow(BadRequestException);
+    });
+
+    //TC6: Đăng nhập thành công với mật khẩu đúng
+    it('returns a user if correct password is provided', async () => {
+        await service.signup('asdf@asdf.com', 'password');
+
+        const user = await service.signin('asdf@asdf.com', 'password');
+        expect(user).toBeDefined();
+    });
 });
 
 
