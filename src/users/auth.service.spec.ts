@@ -40,6 +40,7 @@ describe('AuthService', () => {
     //Test case
     //TC1: Tạo instance của AuthService
     it('can create an instance of AuthService', async () => {
+        //Kiểm tra xem service đã được định nghĩa chưa
         expect(service).toBeDefined();
     });
 
@@ -54,12 +55,11 @@ describe('AuthService', () => {
 
     //TC3: Không thể tạo user với email đã tồn tại
     it('throws an error if user signs up with email that is in use', async () => {
-        fakeUsersService.find = () =>
-        Promise.resolve([{ id: 1, email: 'a', password: '1' } as UserEntity]);
+        await service.signup('asdf@asdf.com', 'asdf');
         await expect(service.signup('asdf@asdf.com', 'asdf')).rejects.toThrow(
-        BadRequestException,
+            BadRequestException,
         );
-    });
+  });
 
     //TC4: Không thể đăng nhập với email không tồn tại
     it('throws if signin is called with an unused email', async () => {
@@ -70,14 +70,11 @@ describe('AuthService', () => {
 
     //TC5: Không thể đăng nhập với mật khẩu sai
     it('throws if an invalid password is provided', async () => {
-        fakeUsersService.find = () =>
-        Promise.resolve([
-            { email: 'asdf@asdf.com', password: 'laskdjf' } as UserEntity,
-        ]);
+        await service.signup('laskdjf@alskdfj.com', 'password');
         await expect(
-        service.signin('laskdjf@alskdfj.com', 'passowrd'),
-        ).rejects.toThrow(BadRequestException);
-    });
+            service.signin('laskdjf@alskdfj.com', 'laksdlfkj'),
+            ).rejects.toThrow(BadRequestException);
+  });
 
     //TC6: Đăng nhập thành công với mật khẩu đúng
     it('returns a user if correct password is provided', async () => {
