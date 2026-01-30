@@ -1,0 +1,14 @@
+POST http://localhost:3000/reports
+Content-Type: application/json
+
+{
+    "make": "Toyota",
+    "model": "Camry",
+    "year": 2020,
+    "mileage": 15000,
+    "price": 24000,
+    "lng": 0,
+    "lat": 0
+}
+
+###
