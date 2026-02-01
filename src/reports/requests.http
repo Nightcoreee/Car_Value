@@ -1,14 +1,21 @@
+
 POST http://localhost:3000/reports
 Content-Type: application/json
 
 {
     "make": "Toyota",
     "model": "Camry",
-    "year": 2020,
+    "year": 2020, 
     "mileage": 15000,
     "price": 24000,
     "lng": 0,
     "lat": 0
 }
 
-###
+### Approve an existing report
+PATCH http://localhost:3000/reports/4
+Content-Type: application/json
+
+{
+    "approved": true
+}
