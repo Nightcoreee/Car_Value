@@ -7,6 +7,7 @@ import { UsersModule } from './users/users.module';
 import { ReportsModule } from './reports/reports.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
+const ormconfig = require('../ormconfig');
 const cookieSession = require('cookie-session');
 @Module({
   imports: [
@@ -14,7 +15,10 @@ const cookieSession = require('cookie-session');
       isGlobal: true,
       envFilePath: `.env.${process.env.NODE_ENV}`,
     }),
-    TypeOrmModule.forRoot(),
+    TypeOrmModule.forRoot({
+      ...ormconfig,
+      autoLoadEntities: true,
+    }), 
     UsersModule,
     ReportsModule,
     ], 
